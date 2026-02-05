@@ -1,4 +1,4 @@
-package com.luispdev.javaservicetemplate.model;
+package com.luispdev.javaservicetemplate.post.domain;
 
 
 import jakarta.persistence.Entity;

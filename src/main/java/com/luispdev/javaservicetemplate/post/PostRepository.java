@@ -1,6 +1,6 @@
-package com.luispdev.javaservicetemplate.repository;
+package com.luispdev.javaservicetemplate.post;
 
-import com.luispdev.javaservicetemplate.model.Post;
+import com.luispdev.javaservicetemplate.post.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
