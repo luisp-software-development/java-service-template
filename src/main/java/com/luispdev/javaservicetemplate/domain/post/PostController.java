@@ -1,9 +1,10 @@
-package com.luispdev.javaservicetemplate.post;
+package com.luispdev.javaservicetemplate.domain.post;
 
-import com.luispdev.javaservicetemplate.post.domain.Post;
-import com.luispdev.javaservicetemplate.post.dto.CreatePostDTO;
-import com.luispdev.javaservicetemplate.post.dto.UpdatePostDTO;
+import com.luispdev.javaservicetemplate.domain.post.model.Post;
+import com.luispdev.javaservicetemplate.domain.post.dto.CreatePostDTO;
+import com.luispdev.javaservicetemplate.domain.post.dto.UpdatePostDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class PostController {
     private final PostService service;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Post create(@RequestBody CreatePostDTO post) {
         return service.create(post);
     }
@@ -35,6 +37,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }

@@ -1,9 +1,9 @@
-package com.luispdev.javaservicetemplate.post;
+package com.luispdev.javaservicetemplate.domain.post;
 
-import com.luispdev.javaservicetemplate.post.domain.Post;
-import com.luispdev.javaservicetemplate.post.dto.CreatePostDTO;
-import com.luispdev.javaservicetemplate.post.dto.UpdatePostDTO;
-import com.luispdev.javaservicetemplate.post.exception.PostNotFoundException;
+import com.luispdev.javaservicetemplate.domain.post.model.Post;
+import com.luispdev.javaservicetemplate.domain.post.dto.CreatePostDTO;
+import com.luispdev.javaservicetemplate.domain.post.dto.UpdatePostDTO;
+import com.luispdev.javaservicetemplate.domain.post.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;

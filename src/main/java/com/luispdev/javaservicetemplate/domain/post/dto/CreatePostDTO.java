@@ -1,4 +1,4 @@
-package com.luispdev.javaservicetemplate.post.dto;
+package com.luispdev.javaservicetemplate.domain.post.dto;
 
 public record CreatePostDTO (
         String title,
