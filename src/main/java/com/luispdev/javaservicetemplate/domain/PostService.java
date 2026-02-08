@@ -4,19 +4,22 @@ import com.luispdev.javaservicetemplate.application.dto.CreatePostDTO;
 import com.luispdev.javaservicetemplate.application.dto.UpdatePostDTO;
 import com.luispdev.javaservicetemplate.infrastructure.PostEntity;
 import com.luispdev.javaservicetemplate.infrastructure.PostRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository repository;
 
-    public PostEntity create(@RequestBody CreatePostDTO postDTO) {
+    public PostEntity create(@Valid @RequestBody CreatePostDTO postDTO) {
         var post = new PostEntity();
         post.setTitle(postDTO.title());
         post.setContent(postDTO.content());
@@ -31,7 +34,7 @@ public class PostService {
         return repository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
-    public PostEntity update(@PathVariable Long id, @RequestBody UpdatePostDTO updated) {
+    public PostEntity update(@PathVariable Long id, @Valid @RequestBody UpdatePostDTO updated) {
         PostEntity postEntity = findById(id);
         postEntity.setTitle(updated.title());
         postEntity.setContent(updated.content());

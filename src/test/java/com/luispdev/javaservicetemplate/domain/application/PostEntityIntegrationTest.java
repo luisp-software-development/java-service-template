@@ -1,5 +1,6 @@
 package com.luispdev.javaservicetemplate.domain.application;
 
+import com.luispdev.javaservicetemplate.application.ErrorMessages;
 import com.luispdev.javaservicetemplate.application.dto.CreatePostDTO;
 import com.luispdev.javaservicetemplate.application.dto.UpdatePostDTO;
 import com.luispdev.javaservicetemplate.domain.AbstractIntegrationTest;
@@ -20,7 +21,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.containsInRelativeOrder;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -91,6 +91,26 @@ class PostEntityIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @DisplayName("Create: should return error when title is blank")
+    public void givenBlankTitle_whenPostingPost_shouldReturnBadRequestWithMatchingErrorMessage() throws Exception {
+        // given
+        var blankTitlePost = Instancio.of(CreatePostDTO.class)
+                .setBlank(field(CreatePostDTO::title))
+                .create();
+
+        // when
+        var response = mockMvc.perform(post("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(blankTitlePost)));
+
+        // then
+        response.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorMessages.POST_TITLE_REQUIRED))
+                .andExpect(jsonPath("$.message").value("Post title is required."));
+
+    }
+
+    @Test
     @DisplayName("Find All: should return all data")
     void givenDatabaseWithExistingPosts_whenGettingPosts_shouldReturnAll() throws Exception {
         // given
@@ -150,7 +170,7 @@ class PostEntityIntegrationTest extends AbstractIntegrationTest {
 
         // then
         response.andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("error.post.notfound"))
+                .andExpect(jsonPath("$.code").value(ErrorMessages.POST_NOT_FOUND))
                 .andExpect(jsonPath("$.message").value("Post not found."));
     }
 
@@ -196,6 +216,26 @@ class PostEntityIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @DisplayName("Update By Id: should return error when title is blank")
+    void givenExistingPostIdAndBlankTitleUpdate_whenUpdatingById_shouldReturnBadRequestWithMatchingErrorMessage() throws Exception {
+        // given
+        var existingPostId = setupExistingPost().getId();
+        var blankTitleUpdate = Instancio.of(UpdatePostDTO.class)
+                .setBlank(field(UpdatePostDTO::title))
+                .create();
+
+        // when
+        var response = mockMvc.perform(put("/posts/" + existingPostId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(blankTitleUpdate)));
+
+        // then
+        response.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorMessages.POST_TITLE_REQUIRED))
+                .andExpect(jsonPath("$.message").value("Post title is required."));
+    }
+
+    @Test
     @DisplayName("Update By Id: should return not found when given unknown post id")
     void givenUnknownPostId_whenUpdatingById_shouldReturnNotFoundError() throws Exception {
         // given
@@ -209,7 +249,7 @@ class PostEntityIntegrationTest extends AbstractIntegrationTest {
 
         // then
         response.andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("error.post.notfound"))
+                .andExpect(jsonPath("$.code").value(ErrorMessages.POST_NOT_FOUND))
                 .andExpect(jsonPath("$.message").value("Post not found."));
     }
 
