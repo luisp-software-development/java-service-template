@@ -1,8 +1,9 @@
-package com.luispdev.javaservicetemplate.domain.post;
+package com.luispdev.javaservicetemplate.application;
 
-import com.luispdev.javaservicetemplate.domain.post.model.Post;
-import com.luispdev.javaservicetemplate.domain.post.dto.CreatePostDTO;
-import com.luispdev.javaservicetemplate.domain.post.dto.UpdatePostDTO;
+import com.luispdev.javaservicetemplate.domain.PostService;
+import com.luispdev.javaservicetemplate.infrastructure.PostEntity;
+import com.luispdev.javaservicetemplate.application.dto.CreatePostDTO;
+import com.luispdev.javaservicetemplate.application.dto.UpdatePostDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +18,22 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Post create(@RequestBody CreatePostDTO post) {
+    public PostEntity create(@RequestBody CreatePostDTO post) {
         return service.create(post);
     }
 
     @GetMapping
-    public List<Post> getAll() {
+    public List<PostEntity> getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public Post findById(@PathVariable Long id) {
+    public PostEntity findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PutMapping("/{id}")
-    public Post update(@PathVariable Long id, @RequestBody UpdatePostDTO post) {
+    public PostEntity update(@PathVariable Long id, @RequestBody UpdatePostDTO post) {
         return service.update(id, post);
     }
 

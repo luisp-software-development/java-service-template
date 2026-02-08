@@ -1,9 +1,10 @@
-package com.luispdev.javaservicetemplate.domain.post;
+package com.luispdev.javaservicetemplate.domain.application;
 
+import com.luispdev.javaservicetemplate.application.dto.CreatePostDTO;
+import com.luispdev.javaservicetemplate.application.dto.UpdatePostDTO;
 import com.luispdev.javaservicetemplate.domain.AbstractIntegrationTest;
-import com.luispdev.javaservicetemplate.domain.post.model.Post;
-import com.luispdev.javaservicetemplate.domain.post.dto.CreatePostDTO;
-import com.luispdev.javaservicetemplate.domain.post.dto.UpdatePostDTO;
+import com.luispdev.javaservicetemplate.infrastructure.PostEntity;
+import com.luispdev.javaservicetemplate.infrastructure.PostRepository;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +19,8 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsInRelativeOrder;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -27,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @DisplayName("/posts")
-class PostAPITest extends AbstractIntegrationTest {
+class PostEntityIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     private PostRepository repository;
@@ -76,7 +78,7 @@ class PostAPITest extends AbstractIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        var createdPostId = objectMapper.readValue(responseBody, Post.class).getId();
+        var createdPostId = objectMapper.readValue(responseBody, PostEntity.class).getId();
 
         // then
         var findByIdReturn = repository.findById(createdPostId);
@@ -100,7 +102,9 @@ class PostAPITest extends AbstractIntegrationTest {
         //then
         response.andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(existingPosts.size()))
-                .andExpect(jsonPath("$", equalTo(existingPosts)));
+                .andExpect(jsonPath("$[*].id", containsInAnyOrder(existingPosts.stream().map(PostEntity::getId).map(Long::intValue).toArray())))
+                .andExpect(jsonPath("$[*].title", containsInAnyOrder(existingPosts.stream().map(PostEntity::getTitle).toArray())))
+                .andExpect(jsonPath("$[*].content", containsInAnyOrder(existingPosts.stream().map(PostEntity::getContent).toArray())));
     }
 
     @Test
@@ -248,19 +252,19 @@ class PostAPITest extends AbstractIntegrationTest {
         response.andExpect(status().isNoContent());
     }
 
-    private Post setupExistingPost() {
+    private PostEntity setupExistingPost() {
         var generatedPost = Instancio.of(postModel()).create();
         return repository.save(generatedPost);
     }
 
-    private List<Post> setupExistingPosts() {
-        var generatedPosts = Instancio.of(postModel()).stream().toList();
+    private List<PostEntity> setupExistingPosts() {
+        var generatedPosts = Instancio.ofList(postModel()).create();
         return repository.saveAll(generatedPosts);
     }
 
-    private static Model<Post> postModel() {
-        return Instancio.of(Post.class)
-                .set(field(Post::getId), null)
+    private static Model<PostEntity> postModel() {
+        return Instancio.of(PostEntity.class)
+                .set(field(PostEntity::getId), null)
                 .toModel();
     }
 }

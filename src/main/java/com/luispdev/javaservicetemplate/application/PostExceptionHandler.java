@@ -1,9 +1,8 @@
-package com.luispdev.javaservicetemplate.domain.post;
+package com.luispdev.javaservicetemplate.application;
 
-import com.luispdev.javaservicetemplate.domain.ErrorResponse;
-import com.luispdev.javaservicetemplate.domain.post.exception.PostNotFoundException;
+import com.luispdev.javaservicetemplate.application.dto.ErrorResponseDTO;
+import com.luispdev.javaservicetemplate.domain.PostNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,10 +14,10 @@ public class PostExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(PostNotFoundException.class)
-    public ErrorResponse notFound() {
+    public ErrorResponseDTO notFound() {
         var code = "error.post.notfound";
         var message = "Post not found.";
-        return new ErrorResponse(code, message);
+        return new ErrorResponseDTO(code, message);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.luispdev.javaservicetemplate.domain.post.model;
+package com.luispdev.javaservicetemplate.infrastructure;
 
 
 import jakarta.persistence.Entity;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class PostEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

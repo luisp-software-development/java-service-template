@@ -1,4 +1,4 @@
-package com.luispdev.javaservicetemplate.config;
+package com.luispdev.javaservicetemplate.application.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
